@@ -6,7 +6,7 @@ A high-performance 3D software rendering engine written in C. This project imple
 ---
 
 ## Overview
-I coded this for a pet project of mine, getting the ram usage really low for it to port and and run reliably on my Arduino Uno R3. The main reason FPU's were eliminated was to compensate for the board having a measely 16MHz CPU and a WHOLE 2KB OF RAM. I am pleased to say I have accomplished my goal of making it as light as possible, even though it looks a little choppy here and there because of the aggressive optimizations leaving the myth of "accuracy" to be lower on my priorities list.
+I designed this as a constrained target project for the Arduino Uno R3, with a heavily optimized version intended to fit within ~1KB RAM (framebuffer + working state) using LUTs stored in flash and minimal stack usage (~300 bytes budget). The main reason FPU's were eliminated was to compensate for the board having a measely 16MHz CPU and a WHOLE 2KB OF RAM. I am pleased to say I have accomplished my goal of making it as light as possible, even though it looks a little choppy here and there because of the aggressive optimizations leaving the myth of "accuracy" to be lower on my priorities list.
 
 Traditional terminal-based 3D visualizers often rely on point-cloud rendering—drawing discrete vertices—and standard floating-point mathematics. This engine implements a complete span-based software rasterizer. It processes continuous polygonal faces, applying perspective projection, backface culling, and per-pixel depth shading. 
 
@@ -19,7 +19,6 @@ What currently bars me from porting:
 the current code 
 - uses write()
 - uses full terminal framebuffer
-- uses large LUTs + stack usage
 - assumes POSIX terminal
 
 These will be adressed in a future commit.
