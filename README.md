@@ -22,6 +22,13 @@ the current code
 - assumes POSIX terminal
 
 These will be adressed in a future commit.
+
+
+I was inspired to do this after watching Code Fiction's video on him making a spinning ASCII cube in the terminal, I wanted a version that could run on the only microcontroller I had laying around: The Arduino Uno R3. Here is a link to his video:
+<https://www.youtube.com/watch?v=p09i_hoFdd0>
+Here is his github repo: <https://github.com/tarantino07/cube.c>
+
+
 ---
 
 ## Mathematical Foundations
