@@ -15,8 +15,7 @@ The architecture is designed for direct portability to embedded systems and micr
 ![demo](cube.gif)
 
 
-What currently bars me from porting:
-the current code 
+What currently bars me from porting the current code: 
 - uses write()
 - uses full terminal framebuffer
 - assumes POSIX terminal
