@@ -13,6 +13,7 @@ Traditional terminal-based 3D visualizers often rely on point-cloud rendering—
 The architecture is designed for direct portability to embedded systems and microcontrollers by utilizing fixed-point arithmetic, pre-computed lookup tables, and highly optimized I/O buffering routines.
 
 ![demo](cube.gif)
+![demo](largeCube.gif)
 
 
 What currently bars me from porting:
