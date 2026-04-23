@@ -13,7 +13,6 @@ Traditional terminal-based 3D visualizers often rely on point-cloud rendering—
 The architecture is designed for direct portability to embedded systems and microcontrollers by utilizing fixed-point arithmetic, pre-computed lookup tables, and highly optimized I/O buffering routines.
 
 ![demo](cube.gif)
-![demo](largeCube.gif)
 
 
 What currently bars me from porting:
@@ -28,6 +27,9 @@ These will be adressed in a future commit.
 I was inspired to do this after watching Code Fiction's video on him making a spinning ASCII cube in the terminal, I wanted a version that could run on the only microcontroller I had laying around: The Arduino Uno R3. Here is a link to his video:
 <https://www.youtube.com/watch?v=p09i_hoFdd0>
 Here is his github repo: <https://github.com/tarantino07/cube.c>
+
+here is another example of a cube spinning, this time the buffer is wayyy above what the Arduino's puny 2 kilobytes of sram could ever dream of handling.
+![demo](largeCube.gif)
 
 
 ---
