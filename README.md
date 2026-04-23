@@ -135,4 +135,3 @@ Run the compiled binary within a POSIX-compliant terminal emulator.
 ## License
 
 This source code is provided as an open-source reference for embedded software rendering techniques and fixed-point mathematical operations.
-```
