@@ -12,11 +12,11 @@
  */
 #define W 32
 #define H 16
-#define PITCH (W + 1) 
+#define PITCH (W + 1)
 #define N (H * PITCH)
 #define SIDE_LENGTH 3
-#define CAM_DIST 10
-#define ZOOM 28
+#define CAM_DIST 11
+#define ZOOM 30
 #define ROTX 2
 #define ROTY 1
 #define FRAMETIME 16670
@@ -25,15 +25,15 @@
 static char buf[N];
 
 /* * Reciprocal Lookup Table: 2^16 / x
- * Used to replace division operations with fixed-point multiplication 
+ * Used to replace division operations with fixed-point multiplication
  * during span interpolation. Valid for widths 1-64.
  */
 static const uint16_t inv_width[65] = {
-    0, 65535, 32768, 21845, 16384, 13107, 10922, 9362, 8192, 7281, 6553, 5957, 
-    5461, 5041, 4681, 4369, 4096, 3855, 3640, 3449, 3276, 3120, 2978, 2849, 
-    2730, 2621, 2520, 2427, 2340, 2259, 2184, 2114, 2048, 1985, 1927, 1872, 
-    1820, 1771, 1724, 1680, 1638, 1598, 1560, 1524, 1489, 1456, 1424, 1394, 
-    1365, 1337, 1310, 1285, 1260, 1236, 1213, 1191, 1170, 1149, 1129, 1110, 
+    0, 65535, 32768, 21845, 16384, 13107, 10922, 9362, 8192, 7281, 6553, 5957,
+    5461, 5041, 4681, 4369, 4096, 3855, 3640, 3449, 3276, 3120, 2978, 2849,
+    2730, 2621, 2520, 2427, 2340, 2259, 2184, 2114, 2048, 1985, 1927, 1872,
+    1820, 1771, 1724, 1680, 1638, 1598, 1560, 1524, 1489, 1456, 1424, 1394,
+    1365, 1337, 1310, 1285, 1260, 1236, 1213, 1191, 1170, 1149, 1129, 1110,
     1092, 1074, 1057, 1040, 1024
 };
 
@@ -73,10 +73,10 @@ static const int8_t faces[6][4] = {
  */
 static void draw_span(int y, int32_t xA, int32_t zA, int32_t xB, int32_t zB) {
     if (xA > xB) { SWAP(xA, xB); SWAP(zA, zB); }
-    
+
     int x_start = xA >> 16;
     int x_end = xB >> 16;
-    if (x_start >= W || x_end < 0) return; 
+    if (x_start >= W || x_end < 0) return;
 
     int width = x_end - x_start;
     int32_t dz = 0;
@@ -94,12 +94,12 @@ static void draw_span(int y, int32_t xA, int32_t zA, int32_t xB, int32_t zB) {
     int offset = y * PITCH;
     for (int x = x_start; x <= x_end; x++) {
         int32_t z = current_z >> 16;
-        current_z += dz; 
+        current_z += dz;
 
         /* Tone mapping: Maps depth range to ASCII luminance ramp */
         int L = 10 - (z >> 10);
         if (L < 0) L = 0; else if (L > 11) L = 11;
-        
+
         buf[offset + x] = ".,-~:;=!*#$@"[L];
     }
 }
@@ -113,7 +113,7 @@ static void rasterize_tri(int x1, int y1, int z1, int x2, int y2, int z2, int x3
     if (y2 > y3) { SWAP(x2, x3); SWAP(y2, y3); SWAP(z2, z3); }
 
     int total_height = y3 - y1;
-    if (total_height == 0) return; 
+    if (total_height == 0) return;
 
     int32_t dx13 = ((int32_t)(x3 - x1) << 16) / total_height;
     int32_t dz13 = ((int32_t)(z3 - z1) << 16) / total_height;
@@ -149,14 +149,14 @@ static void rasterize_tri(int x1, int y1, int z1, int x2, int y2, int z2, int x3
 static void clear_buffer() {
     for (int y = 0; y < H; y++) {
         memset(&buf[y * PITCH], ' ', W);
-        buf[y * PITCH + W] = '\n'; 
+        buf[y * PITCH + W] = '\n';
     }
 }
 
 int main() {
-    write(1, "\x1b[2J\x1b[?25l", 10); 
+    write(1, "\x1b[2J\x1b[?25l", 10);
 
-    int16_t A = 0, B = 0; 
+    int16_t A = 0, B = 0;
     int16_t S = SIDE_LENGTH * 256;      // Scaling factor
     int16_t D = CAM_DIST * 256;     // Translation (Z-axis)
     int16_t K = ZOOM;           // Projection constant
@@ -167,7 +167,7 @@ int main() {
         int16_t cb = icos(B), sb = isin(B);
 
         clear_buffer();
-        
+
         /* Vertex Transformation Pipeline: Rotation -> Translation -> Projection */
         for (int i = 0; i < 8; i++) {
             int32_t X = verts[i][0] * S, Y = verts[i][1] * S, Z = verts[i][2] * S;
@@ -176,11 +176,11 @@ int main() {
             int16_t y1 = ((int32_t)Y * ca - (int32_t)z1 * sa) >> 8;
             int16_t z2 = (((int32_t)Y * sa + (int32_t)z1 * ca) >> 8) + D;
 
-            if (z2 < 1) z2 = 1; 
+            if (z2 < 1) z2 = 1;
 
             px[i] = W / 2 + ((int32_t)x1 * K) / z2;
             py[i] = H / 2 + ((int32_t)y1 * K) / (z2 * 2);
-            pz[i] = z2; 
+            pz[i] = z2;
         }
 
         /* Primitives: Backface culling and Triangle Rasterization */
@@ -188,15 +188,15 @@ int main() {
             int v0 = faces[f][0], v1 = faces[f][1], v2 = faces[f][2], v3 = faces[f][3];
 
             /* Screen-space cross-product for culling */
-            if ((px[v1]-px[v0]) * (py[v2]-py[v0]) - (py[v1]-py[v0]) * (px[v2]-px[v0]) < 0) continue; 
+            if ((px[v1]-px[v0]) * (py[v2]-py[v0]) - (py[v1]-py[v0]) * (px[v2]-px[v0]) < 0) continue;
 
             rasterize_tri(px[v0], py[v0], pz[v0], px[v1], py[v1], pz[v1], px[v2], py[v2], pz[v2]);
             rasterize_tri(px[v0], py[v0], pz[v0], px[v2], py[v2], pz[v2], px[v3], py[v3], pz[v3]);
         }
 
         /* Frame Submission: Single write call to optimize I/O bandwidth */
-        write(1, "\x1b[H", 3); 
-        write(1, buf, N);      
+        write(1, "\x1b[H", 3);
+        write(1, buf, N);
 
         A += ROTX; B += ROTY;
         usleep(FRAMETIME);
